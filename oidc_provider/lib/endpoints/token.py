@@ -201,6 +201,7 @@ class TokenEndpoint(object):
                 at_hash=token.at_hash,
                 request=self.request,
                 scope=token.scope,
+                sid=self.client.frontchannel_logout_session_supported,
             )
         else:
             id_token_dic = {}
@@ -247,6 +248,7 @@ class TokenEndpoint(object):
                 at_hash=token.at_hash,
                 request=self.request,
                 scope=token.scope,
+                sid=self.client.frontchannel_logout_session_supported,
             )
         else:
             id_token_dic = {}
