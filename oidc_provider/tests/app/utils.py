@@ -26,25 +26,25 @@ FAKE_CODE_CHALLENGE = 'YlYXEqXuRm-Xgi2BOUiK50JW1KsGTX6F1TDnZSC8VTg'
 FAKE_CODE_VERIFIER = 'SmxGa0XueyNh5bDgTcSrqzAh2_FmXEqU8kDT6CuXicw'
 
 
-def create_fake_user():
+def create_fake_user(username='johndoe', first_name='John', last_name='Doe', password='1234'):
     """
     Create a test user.
 
     Return a User object.
     """
     user = User()
-    user.username = 'johndoe'
-    user.email = 'johndoe@example.com'
-    user.first_name = 'John'
-    user.last_name = 'Doe'
-    user.set_password('1234')
+    user.username = username
+    user.email = '%s@example.com' % username
+    user.first_name = first_name
+    user.last_name = last_name
+    user.set_password(password)
 
     user.save()
 
     return user
 
 
-def create_fake_client(response_type, is_public=False, require_consent=True):
+def create_fake_client(response_type, is_public=False, require_consent=True, jwt_alg=None, logout_session_supported=False):
     """
     Create a test client, response_type argument MUST be:
     'code', 'id_token' or 'id_token token'.
@@ -62,6 +62,11 @@ def create_fake_client(response_type, is_public=False, require_consent=True):
     client.redirect_uris = ['http://example.com/']
     client.require_consent = require_consent
     client.scope = ['openid', 'email']
+    client.frontchannel_logout_session_supported = logout_session_supported
+
+    if jwt_alg:
+        client.jwt_alg = jwt_alg
+
     client.save()
 
     # check if response_type is a string in a python 2 and 3 compatible way
