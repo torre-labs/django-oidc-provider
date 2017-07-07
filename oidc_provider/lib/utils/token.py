@@ -58,11 +58,12 @@ def create_id_token(user, aud, nonce='', at_hash='', request=None, scope=[], sid
 
     processing_hook = settings.get('OIDC_IDTOKEN_PROCESSING_HOOK')
 
-    if isinstance(processing_hook, (list, tuple)):
-        for hook in processing_hook:
-            dic = settings.import_from_str(hook)(dic, user=user)
-    else:
-        dic = settings.import_from_str(processing_hook)(dic, user=user)
+    if not isinstance(processing_hooks, (list, tuple)):
+        processing_hooks = [processing_hooks]
+
+    for hook_string in processing_hooks:
+        hook = settings.import_from_str(hook_string)
+        dic = hook(dic, user=user, scope=scope)
 
     return dic
 
