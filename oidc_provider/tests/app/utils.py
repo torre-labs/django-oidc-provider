@@ -1,5 +1,9 @@
 import random
 import string
+
+import django
+from django.contrib.auth.backends import ModelBackend
+
 try:
     from urlparse import parse_qs, urlsplit
 except ImportError:
