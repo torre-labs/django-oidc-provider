@@ -11,13 +11,10 @@ from django.contrib.auth.views import (
     redirect_to_login,
     logout,
 )
-
-import django
-if django.VERSION >= (1, 11):
+try:
     from django.urls import reverse
-else:
+except ImportError:
     from django.core.urlresolvers import reverse
-
 from django.contrib.auth import logout as django_user_logout
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -29,6 +26,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import View
 from jwkest import long_to_base64
 
+from oidc_provider.compat import get_attr_or_callable
 from oidc_provider.lib.claims import StandardScopeClaims
 from oidc_provider.lib.endpoints.authorize import AuthorizeEndpoint
 from oidc_provider.lib.endpoints.token import TokenEndpoint
