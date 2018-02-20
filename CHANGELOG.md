@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-### [0.5.3] - 2018-02-01
+### Unreleased
 
 ##### Added
 - Add pep8 compliance and checker
