@@ -74,10 +74,29 @@ class Client(models.Model):
         default=True,
         verbose_name=_('Require Consent?'),
         help_text=_('If disabled, the Server will NEVER ask the user for consent.'))
-
     _redirect_uris = models.TextField(
         default='', verbose_name=_(u'Redirect URIs'),
         help_text=_(u'Enter each URI on a new line.'))
+    _post_logout_redirect_uris = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_(u'Post Logout Redirect URIs'),
+        help_text=_(u'Enter each URI on a new line.'))
+    _scope = models.TextField(
+        blank=True,
+        default='',
+        verbose_name=_(u'Scopes'),
+        help_text=_('Specifies the authorized scope values for the client app.'))
+
+    class Meta:
+        verbose_name = _(u'Client')
+        verbose_name_plural = _(u'Clients')
+
+    def __str__(self):
+        return u'{0}'.format(self.name)
+
+    def __unicode__(self):
+        return self.__str__()
 
     @property
     def redirect_uris(self):
@@ -86,12 +105,6 @@ class Client(models.Model):
     @redirect_uris.setter
     def redirect_uris(self, value):
         self._redirect_uris = '\n'.join(value)
-
-    _post_logout_redirect_uris = models.TextField(
-        blank=True,
-        default='',
-        verbose_name=_(u'Post Logout Redirect URIs'),
-        help_text=_(u'Enter each URI on a new line.'))
 
     @property
     def post_logout_redirect_uris(self):
@@ -111,8 +124,9 @@ class Client(models.Model):
     def __str__(self):
         return u'{0}'.format(self.name)
 
-    def __unicode__(self):
-        return self.__str__()
+    @scope.setter
+    def scope(self, value):
+        self._scope = ' '.join(value)
 
     @property
     def default_redirect_uri(self):
@@ -133,6 +147,9 @@ class BaseCodeTokenModel(models.Model):
     expires_at = models.DateTimeField(verbose_name=_(u'Expiration Date'))
     _scope = models.TextField(default='', verbose_name=_(u'Scopes'))
 
+    class Meta:
+        abstract = True
+
     @property
     def scope(self):
         return self._scope.split()
@@ -149,9 +166,6 @@ class BaseCodeTokenModel(models.Model):
 
     def __unicode__(self):
         return self.__str__()
-
-    class Meta:
-        abstract = True
 
 
 class Code(BaseCodeTokenModel):
@@ -170,6 +184,8 @@ class Code(BaseCodeTokenModel):
 
 class Token(BaseCodeTokenModel):
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, verbose_name=_(u'User'), on_delete=models.CASCADE)
     access_token = models.CharField(max_length=255, unique=True, verbose_name=_(u'Access Token'))
     refresh_token = models.CharField(max_length=255, unique=True, verbose_name=_(u'Refresh Token'))
     _id_token = models.TextField(verbose_name=_(u'ID Token'))
