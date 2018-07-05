@@ -156,14 +156,11 @@ class BaseCodeTokenModel(models.Model):
     def scope(self, value):
         self._scope = ' '.join(value)
 
-    def has_expired(self):
-        return timezone.now() >= self.expires_at
-
-    def __str__(self):
-        return u'{0} - {1}'.format(self.client, self.user.email)
-
     def __unicode__(self):
         return self.__str__()
+
+    def has_expired(self):
+        return timezone.now() >= self.expires_at
 
 
 class Code(BaseCodeTokenModel):
@@ -181,6 +178,9 @@ class Code(BaseCodeTokenModel):
         verbose_name = _(u'Authorization Code')
         verbose_name_plural = _(u'Authorization Codes')
 
+    def __str__(self):
+        return u'{0} - {1}'.format(self.client, self.code)
+
 
 class Token(BaseCodeTokenModel):
 
@@ -190,6 +190,10 @@ class Token(BaseCodeTokenModel):
     refresh_token = models.CharField(max_length=255, unique=True, verbose_name=_(u'Refresh Token'))
     _id_token = models.TextField(verbose_name=_(u'ID Token'))
 
+    class Meta:
+        verbose_name = _(u'Token')
+        verbose_name_plural = _(u'Tokens')
+
     @property
     def id_token(self):
         return json.loads(self._id_token)
@@ -198,9 +202,8 @@ class Token(BaseCodeTokenModel):
     def id_token(self, value):
         self._id_token = json.dumps(value)
 
-    class Meta:
-        verbose_name = _(u'Token')
-        verbose_name_plural = _(u'Tokens')
+    def __str__(self):
+        return u'{0} - {1}'.format(self.client, self.access_token)
 
     @property
     def at_hash(self):
