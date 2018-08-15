@@ -349,7 +349,7 @@ class AuthorizationCodeFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -376,7 +376,7 @@ class AuthorizationCodeFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -410,7 +410,7 @@ class AuthorizationCodeFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -432,7 +432,7 @@ class AuthorizationCodeFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -455,7 +455,7 @@ class AuthorizationCodeFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -496,7 +496,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client.client_id,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'redirect_uri': self.client.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -514,7 +514,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         data = {
             'client_id': self.client.client_id,
             'redirect_uri': self.client.default_redirect_uri,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'scope': 'openid email',
             'state': self.state,
             'nonce': self.nonce,
@@ -529,7 +529,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         # same for public client
         data['client_id'] = self.client_public.client_id,
         data['redirect_uri'] = self.client_public.default_redirect_uri,
-        data['response_type'] = self.client_public.response_type,
+        data['response_type'] = next(self.client_public.response_type_values()),
 
         response = self._auth_request('post', data, is_user_authenticated=True)
 
@@ -544,7 +544,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         data = {
             'client_id': self.client_no_access.client_id,
             'redirect_uri': self.client_no_access.default_redirect_uri,
-            'response_type': self.client_no_access.response_type,
+            'response_type': next(self.client_no_access.response_type_values()),
             'scope': 'openid email',
             'state': self.state,
             'nonce': self.nonce,
@@ -559,7 +559,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         # same for public client
         data['client_id'] = self.client_public_no_access.client_id,
         data['redirect_uri'] = self.client_public_no_access.default_redirect_uri,
-        data['response_type'] = self.client_public_no_access.response_type,
+        data['response_type'] = next(self.client_public_no_access.response_type_values()),
 
         response = self._auth_request('post', data, is_user_authenticated=True)
 
@@ -574,7 +574,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         data = {
             'client_id': self.client.client_id,
             'redirect_uri': self.client.default_redirect_uri,
-            'response_type': self.client.response_type,
+            'response_type': next(self.client.response_type_values()),
             'scope': 'openid email',
             'state': self.state,
             'nonce': self.nonce,
@@ -600,7 +600,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         data = {
             'client_id': self.client_no_access.client_id,
             'redirect_uri': self.client_no_access.default_redirect_uri,
-            'response_type': self.client_no_access.response_type,
+            'response_type': next(self.client_no_access.response_type_values()),
             'scope': 'openid email',
             'state': self.state,
             'nonce': self.nonce,
@@ -624,7 +624,7 @@ class AuthorizationImplicitFlowTestCase(TestCase, AuthorizeEndpointMixin):
         """
         data = {
             'client_id': self.client_public_no_consent.client_id,
-            'response_type': self.client_public_no_consent.response_type,
+            'response_type': next(self.client_public_no_consent.response_type_values()),
             'redirect_uri': self.client_public_no_consent.default_redirect_uri,
             'scope': 'openid email',
             'state': self.state,
@@ -685,7 +685,7 @@ class AuthorizationHybridFlowTestCase(TestCase, AuthorizeEndpointMixin):
         self.data = {
             'client_id': self.client_code_idtoken_token.client_id,
             'redirect_uri': self.client_code_idtoken_token.default_redirect_uri,
-            'response_type': self.client_code_idtoken_token.response_type,
+            'response_type': next(self.client_code_idtoken_token.response_type_values()),
             'scope': 'openid email',
             'state': self.state,
             'nonce': self.nonce,
@@ -731,7 +731,7 @@ class TestCreateResponseURI(TestCase):
         data = {
             'client_id': client.client_id,
             'redirect_uri': client.default_redirect_uri,
-            'response_type': client.response_type,
+            'response_type': next(client.response_type_values()),
         }
 
         factory = RequestFactory()
