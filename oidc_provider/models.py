@@ -29,7 +29,14 @@ JWT_ALGS = [
 ]
 
 
+class ResponseTypeManager(models.Manager):
+    def get_by_natural_key(self, value):
+        return self.get(value=value)
+
+
 class ResponseType(models.Model):
+    objects = ResponseTypeManager()
+
     value = models.CharField(
         max_length=30,
         choices=RESPONSE_TYPE_CHOICES,
@@ -38,6 +45,9 @@ class ResponseType(models.Model):
     description = models.CharField(
         max_length=50,
     )
+
+    def natural_key(self):
+        return self.value,  # natural_key must return tuple
 
     def __str__(self):
         return u'{0}'.format(self.description)
