@@ -348,7 +348,7 @@ class JwksView(View):
 
 
 class EndSessionView(LogoutView):
-    @never_cache
+    @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
         id_token_hint = request.GET.get('id_token_hint', '')
         post_logout_redirect_uri = request.GET.get('post_logout_redirect_uri', '')
