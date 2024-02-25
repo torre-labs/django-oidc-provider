@@ -205,29 +205,11 @@ class AuthorizeEndpoint(object):
 
                 query_fragment['state'] = self.params['state'] if self.params['state'] else ''
 
-            if settings.get('OIDC_SESSION_MANAGEMENT_ENABLE'):
-                # Generate client origin URI from the redirect_uri param.
-                redirect_uri_parsed = urlsplit(self.params['redirect_uri'])
-                client_origin = '{0}://{1}'.format(
-                    redirect_uri_parsed.scheme, redirect_uri_parsed.netloc)
-
-                # Create random salt.
-                salt = md5(uuid4().hex.encode()).hexdigest()
-
-                # The generation of suitable Session State values is based
-                # on a salted cryptographic hash of Client ID, origin URL,
-                # and OP browser state.
-                session_state = '{client_id} {origin} {browser_state} {salt}'.format(
-                    client_id=self.client.client_id,
-                    origin=client_origin,
-                    browser_state=get_browser_state_or_default(self.request),
-                    salt=salt)
-                session_state = sha256(session_state.encode('utf-8')).hexdigest()
-                session_state += '.' + salt
-                if self.grant_type == 'authorization_code':
-                    query_params['session_state'] = session_state
-                elif self.grant_type in ['implicit', 'hybrid']:
-                    query_fragment['session_state'] = session_state
+            session_state = self.session_state()
+            if session_state and self.grant_type == 'authorization_code':
+                query_params['session_state'] = session_state
+            elif session_state and self.grant_type in ['implicit', 'hybrid']:
+                query_fragment['session_state'] = session_state
 
         except Exception as error:
             logger.exception('[Authorize] Error when trying to create response uri: %s', error)
@@ -305,3 +287,28 @@ class AuthorizeEndpoint(object):
             scopes_extra = []
 
         return scopes + scopes_extra
+
+    def session_state(self):
+        if settings.get('OIDC_SESSION_MANAGEMENT_ENABLE'):
+            # Generate client origin URI from the redirect_uri param.
+            redirect_uri_parsed = urlsplit(self.params['redirect_uri'])
+            client_origin = '{0}://{1}'.format(
+                redirect_uri_parsed.scheme, redirect_uri_parsed.netloc)
+
+            # Create random salt.
+            salt = md5(uuid4().hex.encode()).hexdigest()
+
+            # The generation of suitable Session State values is based
+            # on a salted cryptographic hash of Client ID, origin URL,
+            # and OP browser state.
+            session_state = '{client_id} {origin} {browser_state} {salt}'.format(
+                client_id=self.client.client_id,
+                origin=client_origin,
+                browser_state=get_browser_state_or_default(self.request),
+                salt=salt)
+            session_state = sha256(session_state.encode('utf-8')).hexdigest()
+            session_state += '.' + salt
+
+            return session_state
+        else:
+            return None

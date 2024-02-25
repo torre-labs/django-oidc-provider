@@ -104,7 +104,7 @@ class AuthorizeError(Exception):
         self.redirect_uri = redirect_uri
         self.grant_type = grant_type
 
-    def create_uri(self, redirect_uri, state):
+    def create_uri(self, redirect_uri, state, session_state):
         description = quote(self.description)
 
         # See:
@@ -119,6 +119,9 @@ class AuthorizeError(Exception):
 
         # Add state if present.
         uri = uri + ('&state={0}'.format(state) if state else '')
+
+        # Add session_state if present.
+        uri = uri + ('&session_state={0}'.format(session_state) if session_state else '')
 
         return uri
 

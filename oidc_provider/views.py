@@ -163,7 +163,9 @@ class AuthorizeView(View):
         except AuthorizeError as error:
             uri = error.create_uri(
                 authorize.params['redirect_uri'],
-                authorize.params['state'])
+                authorize.params['state'],
+                authorize.session_state()
+            )
 
             return redirect(uri)
 
@@ -196,7 +198,9 @@ class AuthorizeView(View):
         except AuthorizeError as error:
             uri = error.create_uri(
                 authorize.params['redirect_uri'],
-                authorize.params['state'])
+                authorize.params['state'],
+                authorize.session_state()
+            )
 
             return redirect(uri)
 
