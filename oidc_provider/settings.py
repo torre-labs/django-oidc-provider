@@ -120,6 +120,15 @@ class DefaultSettings(object):
         return 30*3
 
     @property
+    def OIDC_ALLOWED_REDIRECT_URI_WILDCARD_HOSTS(self):
+        """
+        OPTIONAL. List of hostname suffixes that may be used by wildcard
+        redirect URI entries such as https://*.example.com/callback.
+        Wildcard matching remains disabled by default.
+        """
+        return []
+
+    @property
     def OIDC_TOKEN_EXPIRE(self):
         """
         OPTIONAL. Token object expiration after been created.

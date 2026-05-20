@@ -8,6 +8,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
+from oidc_provider.lib.utils.redirect_uris import RedirectUriCollection
+
 CLIENT_TYPE_CHOICES = [
     ('confidential', 'Confidential'),
     ('public', 'Public'),
@@ -110,8 +112,19 @@ class Client(models.Model):
         verbose_name=_(u'Scopes'),
         help_text=_('Specifies the authorized scope values for the client app.'))
 
-    frontchannel_logout_uri = models.URLField(blank=True, verbose_name=_(u'Front-Channel logout URI'), help_text=_(u'URI that this OP should call when a user requests to log out'))
-    frontchannel_logout_session_supported = models.BooleanField(default=False, verbose_name=_(u'Logout session required'), help_text=_(u'Should this OP include the session id as parameter when calling \'frontchannel_logout_uri\'?'))
+    frontchannel_logout_uri = models.URLField(
+        blank=True,
+        verbose_name=_(u'Front-Channel logout URI'),
+        help_text=_(u'URI that this OP should call when a user requests to log out'),
+    )
+    frontchannel_logout_session_supported = models.BooleanField(
+        default=False,
+        verbose_name=_(u'Logout session required'),
+        help_text=_(
+            u'Should this OP include the session id as parameter when calling '
+            u'\'frontchannel_logout_uri\'?'
+        ),
+    )
 
     class Meta:
         verbose_name = _(u'Client')
@@ -132,7 +145,7 @@ class Client(models.Model):
 
     @property
     def redirect_uris(self):
-        return self._redirect_uris.splitlines()
+        return RedirectUriCollection(self._redirect_uris.splitlines())
 
     @redirect_uris.setter
     def redirect_uris(self, value):
@@ -160,7 +173,11 @@ class Client(models.Model):
 
     def get_frontchannel_logout_uri(self, iss, sid):
         if self.frontchannel_logout_session_supported:
-            return '{uri}?iss={iss}&sid={sid}'.format(uri=self.frontchannel_logout_uri, iss=iss, sid=sid)
+            return '{uri}?iss={iss}&sid={sid}'.format(
+                uri=self.frontchannel_logout_uri,
+                iss=iss,
+                sid=sid,
+            )
         else:
             return self.frontchannel_logout_uri
 

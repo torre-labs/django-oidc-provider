@@ -44,7 +44,12 @@ def create_fake_user(username='johndoe', first_name='John', last_name='Doe', pas
     return user
 
 
-def create_fake_client(response_type, is_public=False, require_consent=True, jwt_alg=None, logout_session_supported=False):
+def create_fake_client(
+        response_type,
+        is_public=False,
+        require_consent=True,
+        jwt_alg=None,
+        logout_session_supported=False):
     """
     Create a test client, response_type argument MUST be:
     'code', 'id_token' or 'id_token token'.
