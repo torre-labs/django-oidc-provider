@@ -1,0 +1,15 @@
+name: AI Readiness Scorecard
+
+on:
+  push:
+    branches: [v0.5.x]
+  workflow_dispatch:
+
+jobs:
+  scorecard:
+    uses: torre-labs/workflows/.github/workflows/scorecard.yml@v4
+    secrets: inherit
+    permissions:
+      contents: read
+    with:
+      workflows-ref: v4   # must match the @ref above; see torre-labs/workflows README "Versioning"
